@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI in Construction: what firms actually tell investors</title>
+<meta name="description" content="Every mention of artificial intelligence in the annual reports of 106 listed US construction and engineering firms, FY2014–2025. Every filing, figure and quotation links to the original document on sec.gov.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap head-inner">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <div class="brand-t">AI in Construction</div>
+        <div class="brand-s">What listed firms actually tell investors</div>
+      </div>
+    </div>
+    <nav id="nav" aria-label="Sections">
+      <button data-view="filings" class="on">Filings</button>
+      <button data-view="overview">Overview</button>
+      <button data-view="themes">Themes</button>
+      <button data-view="templates">Templates</button>
+      <button data-view="words">Words</button>
+      <button data-view="stories">Stories</button>
+      <button data-view="firms">Firms</button>
+      <button data-view="language">Passages</button>
+      <button data-view="method">Method</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <!-- ============================================ FILINGS -->
+  <section id="view-filings" class="view">
+    <div class="hero">
+      <h1>Every filing we read, <em>one click from the original</em></h1>
+      <p class="lede">
+        One square per company-year. Colour is how much artificial-intelligence language
+        that annual report carries. Hover a blue square to read the AI sentence it found;
+        click it to open that 10-K on sec.gov <em>scrolled to that sentence, highlighted</em>.
+        Grey and white squares open their filing at the top, and a company name opens its
+        full record. Nothing on this site is hand-entered, and nothing is more than one
+        click from the document it came from.
+      </p>
+      <p class="lede" style="margin-top:10px">
+        Here for the findings instead? <a href="#" data-goto="overview">Start with the overview</a>,
+        or read <a href="#" data-goto="language">every AI passage we found</a>: each one opens
+        its 10-K on sec.gov scrolled to that exact sentence, highlighted.
+      </p>
+    </div>
+
+    <div class="stats">
+      <div class="stat accent"><div class="v" id="inv-filings">&hellip;</div>
+        <div class="k">annual reports in the panel</div></div>
+      <div class="stat"><div class="v" id="inv-firms">&hellip;</div>
+        <div class="k">listed construction and engineering firms</div></div>
+      <div class="stat"><div class="v" id="inv-span">&hellip;</div>
+        <div class="k">fiscal years, every 10-K each firm filed</div></div>
+      <div class="stat"><div class="v" id="inv-words">&hellip;</div>
+        <div class="k">words of filing text read</div>
+        <div class="s">frozen under a SHA-256 manifest on <span id="inv-frozen">&hellip;</span></div></div>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <input id="inv-search" type="search" placeholder="Find a company&hellip;  e.g. Fluor, KBR, or a state code"
+               aria-label="Search companies">
+        <select id="inv-seg" aria-label="Filter by segment"></select>
+        <label class="chk"><input type="checkbox" id="inv-ai"> Only firms that mention AI</label>
+        <span class="count" id="inv-count"></span>
+      </div>
+
+      <div class="legend inv-legend">
+        <span><i style="background:var(--surface);box-shadow:inset 0 0 0 1px var(--line-2)"></i>10-K filed, outside the operating screen that year</span>
+        <span><i style="background:var(--zero)"></i>in the panel, no AI language</span>
+        <span><i style="background:var(--s1)"></i>1&ndash;4 core AI terms</span>
+        <span><i style="background:var(--s3)"></i>5&ndash;14</span>
+        <span><i style="background:var(--s5)"></i>15 or more</span>
+      </div>
+
+      <div id="inv-grid" class="inv"></div>
+
+      <p class="note">A blank means the firm filed no 10-K for that fiscal year, usually
+      because it had not yet listed or had been acquired. The right-hand column totals
+      the core AI terms across all of a firm's filings. Shell registrants are excluded
+      by requiring US$10m in assets or revenue and a filing of at least 5,000 words;
+      the filings that fail that screen are still shown, outlined, so nothing is hidden.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ OVERVIEW -->
+  <section id="view-overview" class="view" hidden>
+    <div class="hero">
+      <h1>Everyone in construction is talking about AI.<br><em>Almost nobody says they use it.</em></h1>
+      <p class="lede">
+        We read every mention of artificial intelligence in <strong id="h-filings">&hellip;</strong> annual
+        reports filed with the SEC by <strong id="h-firms">&hellip;</strong> listed US construction and
+        engineering firms between <strong id="h-from">&hellip;</strong> and <strong id="h-to">&hellip;</strong>.
+        A 10-K is compulsory and legally actionable, and firms are accountable for
+        what they write in it. Every number on this site links to the filing it came from.
+      </p>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="card">
+      <h2>The sudden arrival</h2>
+      <p class="sub">Share of operating firms mentioning AI in their annual report. Shaded band is the 95% bootstrap interval.</p>
+      <div id="c-adoption" class="chart"></div>
+      <p class="note">AI disclosure was flat near zero for eight years, then rose almost vertically in three, in every industry segment at once. That is not how a technology diffuses through an industry.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>Opportunity, or liability?</h2>
+        <p class="sub">Where AI mentions sit inside the 10-K. Item 1A is where a firm warns investors; Items 1 and 7 are where it describes its own business.</p>
+        <div id="c-framing" class="chart"></div>
+      </div>
+      <div class="card">
+        <h2>Talking versus doing</h2>
+        <p class="sub">Firms mentioning AI, against firms claiming to actually deploy it.</p>
+        <div id="c-gap" class="chart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>What the AI language actually says</h2>
+      <p class="sub">Every AI passage coded by three open-weight language models from three different labs, taking the majority vote. Validated against blind human coding (Cohen's κ = <span id="h-kappa">&hellip;</span>).</p>
+      <div id="c-claims" class="chart"></div>
+    </div>
+
+    <div class="card callout">
+      <h2>Nothing about the firm explains it</h2>
+      <p>Calendar year alone explains <strong id="h-r2y">&hellip;</strong> of the variation in whether a firm
+      discloses AI. Everything about the individual firm, meaning size, profitability, leverage and
+      capital intensity, adds <strong id="h-r2c">&hellip;</strong>. Industry segment adds <strong id="h-r2s">&hellip;</strong>.</p>
+      <div id="c-variance" class="chart"></div>
+      <p class="note">The reason is in the <a href="#" data-goto="templates">Templates</a> tab: firms are not writing their own sentences.</p>
+    </div>
+  </section>
+
+  <!-- ============================================ FIRMS -->
+  <section id="view-firms" class="view" hidden>
+    <h1>Look up a contractor</h1>
+    <p class="lede">Every firm in the sample, with its complete AI disclosure history. Click any row to see the year-by-year record and jump straight to the filings on sec.gov.</p>
+
+    <div class="toolbar">
+      <input id="f-search" type="search" placeholder="Search a firm…  e.g. Fluor, Lennar, KBR" aria-label="Search firms">
+      <select id="f-segment" aria-label="Filter by segment"><option value="">All segments</option></select>
+      <select id="f-traj" aria-label="Filter by trajectory"><option value="">All trajectories</option></select>
+      <label class="chk"><input type="checkbox" id="f-deploy"> Claims deployment only</label>
+      <span class="count" id="f-count"></span>
+    </div>
+
+    <div class="tablewrap">
+      <table id="f-table" class="data">
+        <thead><tr>
+          <th data-sort="name">Firm</th>
+          <th data-sort="segment">Segment</th>
+          <th data-sort="revenue" class="num">Revenue</th>
+          <th data-sort="mentions" class="num">AI mentions<br><small>FY2024–25</small></th>
+          <th data-sort="intensity" class="num">Intensity<br><small>per 10k words</small></th>
+          <th data-sort="risk_share" class="num">Risk framing</th>
+          <th data-sort="first_ai_year" class="num">First year</th>
+          <th data-sort="deploys" class="num">Deploys?</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="f-detail" class="detail" hidden></div>
+  </section>
+
+  <!-- ============================================ LANGUAGE -->
+  <section id="view-language" class="view" hidden>
+    <h1>Read what they wrote</h1>
+    <p class="lede">All <strong id="l-total">&hellip;</strong> AI passages in the filing panel, with the label three language models agreed on. Search the text, filter by what the passage claims, and open the filing it came from.</p>
+
+    <div class="toolbar">
+      <input id="l-search" type="search" placeholder="Search the text…  e.g. safety, scheduling, chatbot" aria-label="Search passage text">
+      <select id="l-claim" aria-label="Filter by claim"><option value="">All claim types</option></select>
+      <select id="l-section" aria-label="Filter by section"><option value="">All 10-K sections</option></select>
+      <select id="l-year" aria-label="Filter by year"><option value="">All years</option></select>
+      <span class="count" id="l-count"></span>
+    </div>
+    <div class="legendbar" id="l-legend"></div>
+    <div id="l-list" class="passages"></div>
+    <button id="l-more" class="more" hidden>Show more</button>
+  </section>
+
+  <!-- ============================================ TEMPLATES -->
+  <section id="view-templates" class="view" hidden>
+    <h1>The same sentences, at different firms</h1>
+    <p class="lede">
+      If firms were independently recognising AI risk, they would describe it in their own words.
+      Frequently they do not. We found <strong id="t-count">&hellip;</strong> sentence-level templates
+      recurring at two or more unrelated registrants, covering <strong id="t-pct">&hellip;</strong> of all
+      AI passages, including <strong id="t-verbatim">&hellip;</strong> word-for-word matches between firms.
+    </p>
+    <div class="card callout">
+      <p><strong>AECOM, Fluor, Jacobs Solutions and KBR</strong>, the four largest engineering and EPC
+      firms in the sample, share four separate AI risk-factor passages word for word. A common
+      external shock explains simultaneous <em>attention</em> to AI. It cannot explain identical
+      <em>sentences</em>. That requires transmission, most plausibly through shared securities counsel.</p>
+    </div>
+    <div id="t-list" class="templates"></div>
+  </section>
+
+
+
+  <!-- ============================================ STORIES -->
+  <section id="view-stories" class="view" hidden>
+    <h1>What a full read of the passages turns up</h1>
+    <p class="lede">Every AI passage in the filing panel, read end to end. Three results
+    that only appear at that grain: whose AI the risk language attends to, how
+    eight firms' disclosures moved over a decade, and the six firm-years that
+    bound the sector's disclosure space.</p>
+
+    <div class="card">
+      <h2>Whose AI the risk disclosures attend to</h2>
+      <p class="sub"><strong id="s-outward">&hellip;</strong> of
+      <strong id="s-base">&hellip;</strong> risk-bearing passages, four of every
+      five, attend to AI in hands other than the reporting firm's.</p>
+      <div id="c-concern" class="chart"></div>
+      <div id="s-quotes" class="qgrid"></div>
+    </div>
+
+    <div class="card">
+      <h2>Eight trajectories, FY2015 to FY2025</h2>
+      <p class="sub">AI sentences per fiscal year: capability side of the filing
+      (blue, above each line) and risk side (red, below). Hover any dot for the
+      counts, click it to read that firm-year's passages. Each annotation below
+      is verified verbatim against the raw filing.</p>
+      <div id="c-traj" class="chart"></div>
+      <div id="s-traj-detail" hidden></div>
+      <div id="s-milestones" class="mslist"></div>
+    </div>
+
+    <div class="card">
+      <h2>The outer range of disclosure positions</h2>
+      <p class="sub">Six firm-years that bound the space, quoted verbatim.
+      Between these bounds lies the templated middle documented in the
+      Templates view.</p>
+      <div id="s-boundary" class="bgrid"></div>
+    </div>
+  </section>
+
+  <!-- ============================================ THEMES -->
+  <section id="view-themes" class="view" hidden>
+    <h1>What the AI talk is actually about</h1>
+    <p class="lede">Every AI passage was read by three open-weight language models from three
+    different developers and labelled on seven dimensions. Where no two models agreed, the
+    passage is recorded as unresolved rather than forced into a category. These are the
+    majority labels for <strong id="th-n">&hellip;</strong> passages from
+    <strong id="th-firms">&hellip;</strong> operating firms.</p>
+
+    <div class="stats" id="th-stats"></div>
+
+    <div class="grid3">
+      <div class="card">
+        <h2>Most named risk is AI in someone else's hands</h2>
+        <p class="sub">Risk themes named across all coded passages. Cybersecurity is not AI
+        failing; it is somebody else using AI against the firm.</p>
+        <div id="c-risktot" class="chart"></div>
+      </div>
+      <div class="card">
+        <h2>Which technology gets named</h2>
+        <p class="sub">Most AI language names no technology at all.</p>
+        <div id="c-tech" class="chart"></div>
+      </div>
+      <div class="card">
+        <h2>Whose AI is being described</h2>
+        <p class="sub">A firm can disclose AI without ever claiming to touch it.</p>
+        <div id="c-actor" class="chart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Slice any dimension</h2>
+      <p class="sub">The same coding, cut three ways. Section is the strongest cut: where a
+      sentence sits in the 10-K predicts what it says.</p>
+      <div class="toolbar">
+        <select id="th-dim" aria-label="Dimension">
+          <option value="claim">What it claims</option>
+          <option value="risk_type">Risk theme</option>
+          <option value="technology">Technology named</option>
+          <option value="actor">Whose AI</option>
+          <option value="valence">Tone</option>
+          <option value="time_frame">Time frame</option>
+        </select>
+        <select id="th-cut" aria-label="Cut">
+          <option value="by_year">By fiscal year</option>
+          <option value="by_section">By 10-K section</option>
+          <option value="by_segment">By industry segment</option>
+        </select>
+        <span class="count" id="th-note"></span>
+      </div>
+      <div id="c-dim" class="chart"></div>
+    </div>
+
+    <div class="card">
+      <h2>Can these labels be trusted?</h2>
+      <p class="sub">Agreement between the three models on each dimension, and against a
+      blind human coding of a random sample. Kappa corrects for agreement by chance, so it
+      is lower than raw agreement and harder to flatter.</p>
+      <div id="th-rel"></div>
+      <p class="note" id="th-relnote"></p>
+    </div>
+  </section>
+
+  <!-- ============================================ WORDS -->
+  <section id="view-words" class="view" hidden>
+    <h1>How the language changed</h1>
+    <p class="lede">The same firms, the same disclosure, four periods. These are the words
+    that separate each period from the others, measured by weighted log-odds with an
+    informative Dirichlet prior. Firm names are stripped first, otherwise one talkative
+    registrant supplies its own name as the most distinctive word of a period.</p>
+
+    <div class="periods" id="w-periods"></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h2>The grammar flipped to hedging</h2>
+        <p class="sub">Hedging words such as may, could and potential, against assertive
+        words such as we use, currently and has. Per 100 words of AI text.</p>
+        <div id="c-stance" class="chart"></div>
+      </div>
+      <div class="card">
+        <h2>Shorter, and stripped of numbers</h2>
+        <p class="sub">Mean passage length, and the share of passages carrying any figure.</p>
+        <div id="c-concrete" class="chart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>When each term entered the vocabulary</h2>
+      <p class="sub">First fiscal year each AI term appears anywhere in the panel. Dot size
+      is the number of firms that ever used it.</p>
+      <div id="c-diffusion" class="chart"></div>
+    </div>
+
+  </section>
+
+  <!-- ============================================ METHOD -->
+  <section id="view-method" class="view" hidden>
+    <h1>How this was measured</h1>
+    <div class="prose">
+      <h2>The filing archive</h2>
+      <p>Registrants in SIC 1500–1799 (Division C, Construction) plus SIC 8711 (engineering services)
+      were identified from the SEC's quarterly Financial Statement Data Sets. We retrieved every
+      Form 10-K for fiscal years 2014–2025 directly from EDGAR (<strong id="m-files">&hellip;</strong> files,
+      <strong id="m-mb">&hellip;</strong> MB) and froze the archive under a SHA-256 manifest on
+      <strong id="m-frozen">&hellip;</strong>, so any later result can be checked against exactly the same text.</p>
+      <p>Dormant shell registrants, real filers whose entire annual report runs a few hundred words,
+      are excluded by requiring at least US$10m in assets or revenue and a filing of at least 5,000
+      words. That leaves <strong id="m-firms">&hellip;</strong> firms and <strong id="m-obs">&hellip;</strong> firm-years.</p>
+
+      <h2>Two measurement details that change the answer</h2>
+      <p>The bare abbreviation <em>AI</em> is matched case-sensitively as a standalone token, because
+      construction filings refer constantly to <em>AIA</em> contract documents, which a naive pattern
+      counts as artificial intelligence.</p>
+      <p>Splitting a 10-K into its Items is harder than it looks: the table of contents lists every
+      heading before the body starts, and the body is full of cross-references that look identical to
+      headings. Our parser discards a heading followed by another heading within 700 characters, which marks a
+      contents entry, since a real section is followed by thousands of words, then discards
+      grammatical cross-references. It parses 97.0% of filings.</p>
+
+      <h2>Reading the passages</h2>
+      <p>Counting terms says how <em>much</em> a firm talks about AI, not whether it claims to use it.
+      Every AI passage was therefore coded by three open-weight models from three different
+      laboratories (<span id="m-models">&hellip;</span>) run locally with greedy decoding, taking the
+      majority vote. Different laboratories matter: one model's quirks are indistinguishable from a
+      reading of the text, whereas independently trained models agreeing is evidence about the text.
+      Inter-model agreement was Fleiss' κ = <strong id="m-fleiss">&hellip;</strong>.</p>
+
+      <h2>Validation, and what it changed</h2>
+      <p>Machine agreement is a reliability check, not proof of correctness. One author hand-coded a
+      blind random sample of <strong id="m-ncoded">&hellip;</strong> passages, without seeing the model labels
+      or which 10-K section each passage came from. Agreement was
+      <strong id="m-raw">&hellip;</strong> raw, Cohen's κ = <strong id="m-k6">&hellip;</strong> across six categories
+      and κ = <strong id="m-k2">&hellip;</strong> for the deployment-versus-rest distinction the headline rests on.</p>
+      <p>The disagreement was systematic and it changed a published number. The models
+      <em>under-call</em> deployment: they read present-tense statements ("we also utilise generative
+      AI tools") as aspirational, and they attribute client-side AI to the filer. So levels on this
+      site come from the hand-coded random sample, at <strong id="m-dephuman">&hellip;</strong> of passages
+      describing real deployment, while the model coding carries the time series, and every
+      model-based deployment figure is a lower bound.</p>
+
+      <h2>What this cannot tell you</h2>
+      <ul>
+        <li>It measures what firms <em>say</em>, not what they do. Firms may use AI without disclosing
+        it where it is not material. The gap between saying and doing is the object of study, not a flaw
+        but it is a real limit.</li>
+        <li>It covers listed US firms only. The private companies that build most of the built
+        environment never file a 10-K and are invisible here.</li>
+        <li>106 firms is the population, not a sample from it, but it is a small population.</li>
+        <li>Application labels were not part of the human validation and should be read as indicative.</li>
+      </ul>
+
+      <h2>Reproducing it</h2>
+      <p>Every figure on this site is generated from public SEC data by code in the project
+      repository. The filing archive is rebuilt from EDGAR by a single script; the analysis re-runs from the
+      frozen archive; this site is baked from the analysis outputs. Nothing is hand-entered.</p>
+      <p>Every quotation here opens its 10-K on sec.gov <em>at that sentence</em>, highlighted, rather
+      than at the top of a three-hundred-page document. Those 924 links are not assembled in your
+      browser and hoped for: each is cut from the filing's own HTML and then checked against it by
+      replaying the browser's text-matching rules, and one that does not check out is not published.
+      A link that opened the right filing at the wrong paragraph would look exactly like this site
+      inventing a claim, so it is treated as a result to be verified rather than a convenience.</p>
+    </div>
+  </section>
+</main>
+
+<script src="js/charts.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
