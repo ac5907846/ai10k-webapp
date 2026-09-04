@@ -114,7 +114,10 @@
     if (!$('#view-' + view)) view = 'filings';
     $$('.view').forEach(v => v.hidden = v.id !== 'view-' + view);
     $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.view === view));
-    if (location.hash !== '#' + view) history.replaceState(null, '', '#' + view);
+    // entering the site keeps a clean URL: the hash is only written when the
+    // visitor navigates, or already arrived with one
+    if ((location.hash || view !== 'filings')
+        && location.hash !== '#' + view) history.replaceState(null, '', '#' + view);
     C.hideTip();
     window.scrollTo({ top: 0, behavior: 'instant' });
     render(view);
@@ -322,10 +325,12 @@
           const tip = `<b>${esc(f.name)}</b>, FY${y}<br>${what}, ` +
             `${num(c.w / 1000, 0)}k words` +
             (a ? `<q>${esc(clip(a.q, 190))}</q>` : '') +
-            `<i>click to open the 10-K on sec.gov` +
-            `${a ? ', at this sentence' : ''}</i>`;
+            (c.n > 0 ? '<i>click to review its AI sentences</i>'
+                     : '<i>click to open the 10-K on sec.gov</i>');
           return `<a class="inv-cell lv-${lv}" target="_blank" rel="noopener"
              href="${a ? esc(url + a.f) : esc(url)}" data-tip="${esc(tip)}"
+             data-cik="${f.cik}" data-fy="${y}" data-n="${c.n}"
+             data-name="${esc(f.name)}"
              aria-label="${esc(f.name)} FY${y}, ${esc(what)}"></a>`;
         }).join('');
         return `<div class="inv-row">
@@ -340,6 +345,79 @@
     $('#inv-grid').innerHTML = head + (body ||
       '<p class="note" style="border:0">No firm matches that search.</p>');
     $('#inv-count').textContent = shown + ' firms, ' + cells + ' filings shown';
+  }
+
+  // ================================================================ review panel
+  /* Ported from the papers 2-3 sites: click a filing cell with AI language
+     and, instead of jumping straight into the 10-K, a panel lists EVERY AI
+     sentence of that filing, each with its own verified deep link. Two-tone
+     highlight: the sentence sits on its own soft ground, the AI terms pop. */
+  const SEC_LABEL = { item1: 'Item 1 · Business', item1a: 'Item 1A · Risk Factors',
+    item1b: 'Item 1B', item2: 'Item 2 · Properties', item3: 'Item 3 · Legal',
+    item5: 'Item 5 · Market', item7: 'Item 7 · MD&A', item7a: 'Item 7A',
+    item8: 'Item 8', item9a: 'Item 9A', full: 'unsegmented', unsegmented: 'unsegmented' };
+  const AI_RX = new RegExp(
+    ['artificial[\\s-]+intelligence', 'machine[\\s-]+learning',
+     'deep[\\s-]+learning', 'neural[\\s-]+network(?:s)?',
+     'natural[\\s-]+language[\\s-]+processing', 'computer[\\s-]+vision',
+     'predictive[\\s-]+analytics', 'generative[\\s-]*AI',
+     'large[\\s-]+language[\\s-]+model(?:s)?', 'foundation[\\s-]+model(?:s)?',
+     '\\bLLMs?\\b', '\\bChatGPT\\b', '\\bOpenAI\\b', 'chat\\s?bots?',
+     'A\\.I\\.', '\\bAI\\b', '\\bAGI\\b', '\\bNLP\\b',
+     '\\bGPT-?[3-5o]?\\b'].join('|'), 'gi');
+  const hlKw = (s) => esc(s).replace(AI_RX, m => `<mark class="kw">${m}</mark>`);
+
+  let SENTS = null;
+  async function sentencesAll() {
+    if (!SENTS) {
+      SENTS = await fetch('data/sentences.json')
+        .then(r => r.ok ? r.json() : {}).catch(() => ({}));
+    }
+    return SENTS;
+  }
+  function closeModal() {
+    const m = $('.modal-back');
+    if (m) m.remove();
+    document.removeEventListener('keydown', escClose);
+  }
+  function escClose(e) { if (e.key === 'Escape') closeModal(); }
+
+  async function openReview(cell) {
+    const cik = cell.dataset.cik, fy = cell.dataset.fy;
+    const name = cell.dataset.name, n = cell.dataset.n;
+    const docUrl = cell.href.split('#')[0];
+    const sents = (await sentencesAll())[`${cik}:${fy}`] || [];
+    const wrap = document.createElement('div');
+    wrap.className = 'modal-back';
+    wrap.innerHTML =
+      `<div class="modal" role="dialog" aria-label="AI sentences in this filing">
+        <div class="modal-head">
+          <h3>${esc(name)} · FY${fy}</h3>
+          <span class="m-meta">${sents.length} AI sentence${sents.length === 1 ? '' : 's'} ·
+            ${n} core term hit${n === '1' ? '' : 's'}</span>
+          <a class="modal-open" target="_blank" rel="noopener" href="${esc(cell.href)}">Open the 10-K ↗</a>
+          <button class="modal-x" aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">` +
+      (sents.length ? sents.map(([sec, s], i) => {
+        const a = anchorOf(`s:${cik}:${fy}:${i}`);
+        return `<div class="m-sent"><div class="m-txt">${hlKw(s)}</div>
+          <div class="m-foot"><span>${SEC_LABEL[sec] || esc(sec)}</span>
+          <a target="_blank" rel="noopener" href="${esc(docUrl + (a ? a.f : ''))}">
+            open at this sentence${a ? '' : ' (top of document)'} ↗</a></div></div>`;
+      }).join('')
+        : `<p class="m-note">The ${esc(n)} AI term hit${n === '1' ? '' : 's'} in this
+           filing sit inside passages longer than the study's sentence bounds,
+           so no clean sentence could be extracted. Open the 10-K to read them
+           in place.</p>`) +
+      `<p class="m-note">Every link opens the original filing on sec.gov; where a
+        verified anchor exists the browser scrolls to the sentence and highlights
+        it.</p></div></div>`;
+    document.body.appendChild(wrap);
+    wrap.addEventListener('click', (e) => {
+      if (e.target === wrap || e.target.closest('.modal-x')) closeModal();
+    });
+    document.addEventListener('keydown', escClose);
   }
 
   // ================================================================ firms
@@ -894,7 +972,24 @@
       if (g) { e.preventDefault(); show(g.dataset.goto); }
     });
     addEventListener('hashchange', () => show((location.hash || '#filings').slice(1)));
+    // a filing cell with AI language opens the review panel instead of
+    // jumping straight into the document (modified clicks pass through)
+    $('#inv-grid').addEventListener('click', (e) => {
+      const a = e.target.closest('a.inv-cell');
+      if (!a || !(+a.dataset.n > 0)) return;
+      if (e.ctrlKey || e.metaKey || e.shiftKey || e.button !== 0) return;
+      e.preventDefault();
+      C.hideTip();
+      openReview(a);
+    });
     show((location.hash || '#filings').slice(1));
+    // ?review=<cik>:<fy> deep-links straight into a filing's review panel
+    const rv = new URLSearchParams(location.search).get('review');
+    if (rv) {
+      const [cik, fy] = rv.split(':');
+      const cell = $(`a.inv-cell[data-cik="${cik}"][data-fy="${fy}"]`);
+      if (cell) openReview(cell);
+    }
   }
 
   boot();

@@ -74,10 +74,10 @@ h1{font-family:var(--serif);font-size:clamp(28px,4vw,42px);line-height:1.14;
    letter-spacing:-.02em;margin:0 0 14px;font-weight:600}
 h1 em{font-style:italic;color:var(--risk)}
 h2{font-size:19px;font-weight:650;letter-spacing:-.01em;margin:0 0 4px}
-.lede{font-size:17px;color:var(--ink-2);max-width:74ch;margin:0 0 26px}
-.sub{font-size:13.5px;color:var(--ink-3);margin:0 0 16px;max-width:80ch}
+.lede{font-size:17px;color:var(--ink-2);margin:0 0 26px}
+.sub{font-size:13.5px;color:var(--ink-3);margin:0 0 16px}
 .note{font-size:13.5px;color:var(--ink-2);margin:14px 0 0;padding-top:13px;
-      border-top:1px solid var(--line);max-width:82ch}
+      border-top:1px solid var(--line)}
 .hero{margin-bottom:30px}
 
 .card{
@@ -271,7 +271,7 @@ mark{background:color-mix(in srgb,var(--c3) 40%,transparent);color:inherit;
        display:flex;gap:16px;flex-wrap:wrap}
 
 /* ---------------------------------------------------------------- prose */
-.prose{max-width:74ch;font-size:16px}
+.prose{font-size:16px}
 .prose h2{font-family:var(--serif);font-size:22px;font-weight:600;margin:32px 0 10px}
 .prose h2:first-child{margin-top:0}
 .prose p{margin:0 0 15px;color:var(--ink-2)}
@@ -329,3 +329,32 @@ mark{background:color-mix(in srgb,var(--c3) 40%,transparent);color:inherit;
   gap:6px 18px}
 .ms{font-size:12.5px;color:var(--ink-2);line-height:1.45}
 .ms .msy{font-weight:600;color:var(--ink);margin-right:6px}
+
+/* ================================================================ review panel
+   Ported from the papers 2-3 sites: click a filing cell with AI language and a
+   panel lists EVERY AI sentence of that filing, each with its own verified deep
+   link. Two-tone highlight: the sentence on its soft ground, AI terms marked. */
+.modal-back{position:fixed;inset:0;z-index:60;background:rgba(20,20,16,.45);
+  display:flex;align-items:flex-start;justify-content:center;padding:5vh 16px}
+.modal{background:var(--bg);border-radius:var(--r);max-width:860px;width:100%;
+  max-height:88vh;display:flex;flex-direction:column;box-shadow:0 18px 60px rgba(0,0,0,.35)}
+.modal-head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;
+  padding:18px 22px 12px;border-bottom:1px solid var(--line)}
+.modal-head h3{margin:0;font-family:var(--serif);font-size:20px;font-weight:600;flex:1}
+.modal-head .m-meta{font-size:12.5px;color:var(--ink-3)}
+.modal-open{font-size:13px;font-weight:650;color:var(--accent);white-space:nowrap}
+.modal-x{font:inherit;font-size:20px;line-height:1;border:0;background:none;
+  color:var(--ink-3);cursor:pointer;padding:2px 6px;border-radius:4px}
+.modal-x:hover{background:var(--surface-2);color:var(--ink)}
+.modal-body{overflow-y:auto;padding:14px 22px 20px;display:flex;
+  flex-direction:column;gap:10px}
+.m-sent{background:var(--surface);border:1px solid var(--line);
+  border-left:3px solid var(--accent);border-radius:var(--r-s);padding:11px 14px}
+.m-sent .m-txt{font-family:var(--serif);font-size:14.5px;line-height:1.6;
+  background:#eef4fb;border-radius:6px;padding:7px 10px}
+.m-txt mark.kw{background:#f2df9f;color:inherit;padding:0 2px;
+  border-radius:3px;font-weight:600}
+.m-sent .m-foot{display:flex;gap:12px;align-items:center;margin-top:7px;
+  font-size:11.5px;color:var(--ink-3)}
+.m-sent .m-foot a{font-weight:650}
+.m-note{font-size:12.5px;color:var(--ink-3)}
