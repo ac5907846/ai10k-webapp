@@ -50,6 +50,7 @@ Output: data/anchors.json
 """
 import gzip
 import json
+import os
 import re
 import sys
 import time
@@ -64,7 +65,8 @@ from bs4 import BeautifulSoup, NavigableString, Tag, XMLParsedAsHTMLWarning
 warnings.filterwarnings("ignore", category=XMLParsedAsHTMLWarning)
 
 HERE = Path(__file__).resolve().parent
-ANALYSIS = HERE.parent / "02_analysis"
+# AI10K_ANALYSIS lets the repo build from a checkout OUTSIDE the project tree
+ANALYSIS = Path(os.environ.get("AI10K_ANALYSIS", HERE.parent / "02_analysis"))
 DATA = HERE / "data"
 CACHE = Path.home() / ".cache" / "ai_in_construction" / "filing_html"
 
@@ -383,6 +385,17 @@ def collect_requests():
         req.append((f"f:{k[0]}:{k[1]}", k[0], k[1], r.adsh, r.primary_doc_url,
                     first.get(k), True))
 
+    # 1b. the review panel: EVERY AI sentence, indexed in the order of
+    # ai_sentences.csv (build_sentences.py bakes the same order, so index i
+    # here is sentence i there, by construction)
+    idx = {}
+    for r in sents.itertuples():
+        k = (int(r.cik), int(r.fy))
+        i = idx.get(k, 0)
+        req.append((f"s:{k[0]}:{k[1]}:{i}", k[0], k[1], r.adsh,
+                    r.primary_doc_url, r.sentence, False))
+        idx[k] = i + 1
+
     # 2. every coded passage: the Passages view, and the quotations on Stories
     cp = out(A_CLAIMS, "coded_passages.csv")
     for r in cp.itertuples():
@@ -451,8 +464,8 @@ def main():
         if adsh and isinstance(url, str):
             filings[(int(cik), int(fy), adsh)] = url
     print(f"Deep links to verify: {len(req)} across {len(filings)} filings")
-    for prefix, label in (("f:", "landing grid"), ("p:", "coded passages"),
-                          ("t:", "template uses")):
+    for prefix, label in (("f:", "landing grid"), ("s:", "review sentences"),
+                          ("p:", "coded passages"), ("t:", "template uses")):
         print(f"    {label:<16} {sum(k.startswith(prefix) for k, *_ in req)}")
 
     if not offline:
@@ -484,6 +497,12 @@ def main():
             # the one failure this script could otherwise hide, so it is reported.
             ov = (overlap(words_of(want), quote_)
                   if isinstance(want, str) and want and quote_ else None)
+            # an s: anchor promises THE sentence, not merely an AI sentence:
+            # when the verified wording drifts too far from the recorded one,
+            # no anchor beats a wrong anchor (same rule as the papers 2-3 sites)
+            if (frag and key.startswith("s:") and ov is not None and ov < .55):
+                del anchors[key]
+                frag, kind = None, "dropped-low-overlap"
             rows.append({"key": key, "cik": cik, "fy": fy, "kind": kind,
                          "verified": int(frag is not None), "n_matches": hits,
                          "overlap": ov})
@@ -499,8 +518,8 @@ def main():
     ok = int(d.verified.sum())
     print(f"\n  anchors.json     {path.stat().st_size / 1024:.1f} KB")
     print(f"  verified         : {ok} / {len(d)}")
-    for prefix, label in (("f:", "landing grid"), ("p:", "coded passages"),
-                          ("t:", "template uses")):
+    for prefix, label in (("f:", "landing grid"), ("s:", "review sentences"),
+                          ("p:", "coded passages"), ("t:", "template uses")):
         g = d[d.key.str.startswith(prefix)]
         print(f"    {label:<16} {int(g.verified.sum())} / {len(g)}")
     print(f"  unique in document: {int((d.n_matches == 1).sum())} "

@@ -28,6 +28,7 @@ There is a second build step, kept separate because it is the one thing here tha
 the network:
 
 ```bash
+python build_sentences.py       # writes data/sentences.json (the review panel)
 python build_anchors.py         # writes data/anchors.json
 ```
 
@@ -61,6 +62,7 @@ js/app.js           routing, views, search, firm lookup
 data/*.json         baked at build time
 build_data.py       the numbers: the only bridge from 02_analysis to this folder
 build_anchors.py    the links: a verified deep link into the filing behind every quotation
+build_sentences.py  the review panel: every AI sentence per filing, in anchor order
 ```
 
 ### Why hand-rolled charts
